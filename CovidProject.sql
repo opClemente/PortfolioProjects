@@ -1,10 +1,12 @@
 SELECT DB_NAME() AS CurrentDatabase;
 USE portfolioproject;
+GO
 
 select *
 from PortfolioProject.dbo.CovidDeaths
 where continent is not null
 order by 3,4;
+
 
 -- Data I'll be using
 select 
@@ -18,7 +20,8 @@ from PortfolioProject.dbo.CovidDeaths
 order by 1,2;
 
 -- Total Cases vs Total Deaths
--- Likelihood of dying of Covid in USselect location,
+-- Likelihood of dying of Covid in US
+select location,
 date,
 total_cases,
 total_deaths,
@@ -26,7 +29,7 @@ total_deaths,
 from PortfolioProject.dbo.CovidDeaths
 where location like '%states%'
 and continent is not null
-order by 1,2
+order by 1,2;
 
 -- Total Cases vs Population
 -- Percentage of population that got Covid
@@ -82,6 +85,7 @@ order by 1,2
 -- Population vs Vaccinations (temp table vs cte)
 
 -- Temp table
+
 drop table if exists #PercentPopulationVaccinated
 create table #PercentPopulationVaccinated
 (continent nvarchar(255),
@@ -138,7 +142,13 @@ select *,
 from PopvsVac;
 
 
+
 -- Creating a view
+GO
+drop view if exists PercentPopulationVaccinated;
+GO
+	
+GO
 create view PercentPopulationVaccinated as 
 select
 dea.continent,
@@ -152,7 +162,8 @@ join PortfolioProject.dbo.CovidVaccinations vac
 	on dea.location = vac.location
 	and dea.date = vac.date
 where dea.continent is not null
-
+GO
+	
 select * from PercentPopulationVaccinated
 
 select * from INFORMATION_SCHEMA.columns
@@ -160,6 +171,3 @@ where table_name =  'PercentPopulationVaccinated';
 
 SELECT * 
 FROM INFORMATION_SCHEMA.TABLES;
-
-
-
