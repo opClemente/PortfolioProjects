@@ -25,7 +25,7 @@ select location,
 date,
 total_cases,
 total_deaths,
-(total_deaths/total_cases)*100 as DeathPercentage
+(total_deaths/total_cases)*100 as death_percentage
 from PortfolioProject.dbo.CovidDeaths
 where location like '%states%'
 and continent is not null
@@ -93,7 +93,7 @@ location nvarchar(255),
 date datetime,
 population numeric,
 new_vaccinations numeric,
-rollingpeoplevaccinated numeric
+rolling_people_vaccinated numeric
 )
 
 insert into #PercentPopulationVaccinated
@@ -104,7 +104,7 @@ dea.location,
 dea.date,
 dea.population,
 vac.new_vaccinations,
-sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location, dea.date) as RollingPeopleVaccinated
+sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location, dea.date) as rolling_people_vaccinated
 from PortfolioProject.dbo.CovidDeaths dea
 join PortfolioProject.dbo.CovidVaccinations vac
 	on dea.location = vac.location
@@ -112,7 +112,7 @@ join PortfolioProject.dbo.CovidVaccinations vac
 where dea.continent is not null
 
 select *,
-(rollingpeoplevaccinated/population)*100
+(rolling_people_vaccinated/population)*100
 from #PercentPopulationVaccinated;
 
 -- Cte
@@ -121,7 +121,7 @@ location,
 date,
 population,
 newvaccinations,
-rollingpeoplevaccinated
+rolling_people_vaccinated
 )
 as
 (select
@@ -130,7 +130,7 @@ dea.location,
 dea.date,
 dea.population,
 vac.new_vaccinations,
-sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location, dea.date) as RollingPeopleVaccinated
+sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location, dea.date) as rolling_people_vaccinated
 from PortfolioProject.dbo.CovidDeaths dea
 join PortfolioProject.dbo.CovidVaccinations vac
 	on dea.location = vac.location
@@ -138,7 +138,7 @@ join PortfolioProject.dbo.CovidVaccinations vac
 where dea.continent is not null) 
 
 select *,
-(rollingpeoplevaccinated/population)*100
+(rolling_people_vaccinated/population)*100
 from PopvsVac;
 
 
@@ -156,7 +156,7 @@ dea.location,
 dea.date,
 dea.population,
 vac.new_vaccinations,
-sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location, dea.date) as RollingPeopleVaccinated
+sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location, dea.date) as rolling_people_vaccinated
 from PortfolioProject.dbo.CovidDeaths dea
 join PortfolioProject.dbo.CovidVaccinations vac
 	on dea.location = vac.location
